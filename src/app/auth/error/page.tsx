@@ -1,13 +1,13 @@
+import Button from "@/components/ui/Button";
 import CenterContainer from "@/components/ui/CenterContainer";
 import Text from "@/components/ui/Text";
 import { Metadata } from "next";
 import Link from "next/link";
 import { FC } from "react";
 
-
 export const metadata: Metadata = {
-  title: "MeChat | Verify",
-  description: "Verify"
+  title: "MeChat | Signin Error",
+  description: "Signin error"
 }
 
 interface pageProps {}
@@ -17,13 +17,14 @@ const page: FC<pageProps> = ({}) => {
     <div className="flex justify-center items-center h-screen bg-secondary">
       <CenterContainer className="w-[500px] h-[300px] space-y-3" variant="flex">
         <Text size="2xl" className="font-bold">
-          Check your Email
+          Unable to sign in
         </Text>
-        <Text size="lg">
-          A sign in link has been sent to your email address.
+        <Text size="lg">The sign in link is no longer valid.</Text>
+        <Text size="lg" className="text-center">
+          It may have been used already or it may have expired.
         </Text>
-        <Link href="/" className="underline outline-none">
-          {process.env.NEXTAUTH_URL}
+        <Link href="/auth/signin">
+          <Button>SignIn</Button>
         </Link>
       </CenterContainer>
     </div>

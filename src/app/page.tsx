@@ -1,13 +1,12 @@
 "use client"
 
-import React, { useState } from 'react'
+import { useSession } from 'next-auth/react'
+import React from 'react'
 
 export default function page() {
-  const [first, setFirst] = useState('')
+  const { data: session } = useSession()
   return (
     <div>
-      <input type="text" value={first} onChange={(e) => setFirst(e.target.value)} />
-      {first}
     </div>
   )
 }

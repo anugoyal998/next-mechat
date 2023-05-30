@@ -1,12 +1,19 @@
 "use client";
 
 import Button from "@/components/ui/Button";
+import CenterContainer from "@/components/ui/CenterContainer";
 import Input from "@/components/ui/Input";
 import Text from "@/components/ui/Text";
 import { toast } from "@/components/ui/Toast";
 import { Mail } from "lucide-react";
+import { Metadata } from "next";
 import { signIn } from "next-auth/react";
 import { FC, FormEvent, useState } from "react";
+
+export const metadata: Metadata = {
+  title: "MeChat | Signin",
+  description: "Signin"
+}
 
 interface pageProps {}
 
@@ -17,20 +24,20 @@ const page: FC<pageProps> = ({}) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-        await signIn("email", { email })
+      await signIn("email", { email });
     } catch (err) {
-        toast({
-            title: 'Sign in failed',
-            message: 'Server error',
-            type: "error"
-        })
-    }finally {
-        setIsLoading(false);
+      toast({
+        title: "Sign in failed",
+        message: "Server error",
+        type: "error",
+      });
+    } finally {
+      setIsLoading(false);
     }
   }
   return (
     <div className="flex justify-center items-center h-screen bg-secondary">
-      <div className="w-[600px] border-2 rounded-md shadow-md bg-white px-5 py-8">
+      <CenterContainer className="w-[600px]">
         <div className="flex space-x-3">
           {/* <Image /> */}
           <Text size="3xl" className="pb-8 font-bold">
@@ -58,7 +65,7 @@ const page: FC<pageProps> = ({}) => {
             Get Magic Link
           </Button>
         </form>
-      </div>
+      </CenterContainer>
     </div>
   );
 };
