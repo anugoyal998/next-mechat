@@ -1,12 +1,10 @@
-"use client"
-
-import { useSession } from 'next-auth/react'
+import Route from '@/components/Route'
 import React from 'react'
 
 export default function page() {
-  const { data: session } = useSession()
   return (
-    <div>
-    </div>
+    <Route matchedStatus='unauthenticated' redirect='/auth/signin' >
+      <p>anubhav</p>
+    </Route>
   )
 }
