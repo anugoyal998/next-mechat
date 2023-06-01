@@ -14,7 +14,7 @@ interface pageProps {}
 
 const page: FC<pageProps> = ({}) => {
   return (
-    <Route matchedStatus="authenticated" redirect="/">
+    <Route matchedStatus="authenticated" redirect="/chat">
       <div className="flex justify-center items-center h-screen bg-secondary">
         <CenterContainer
           className="w-[500px] h-[300px] space-y-3"

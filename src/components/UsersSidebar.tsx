@@ -15,12 +15,15 @@ import {
   ScrollAreaCorner,
 } from "@/components/ui/ScrollArea";
 import Text from "./ui/Text";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
 interface UsersSidebarProps {}
 
 const UsersSidebar: FC<UsersSidebarProps> = ({}) => {
   const [text, setText] = useState("");
   const [users, setUsers] = useState<GetUserTextResponseType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const { data: session } = useSession();
   useEffect(() => {
     const getData = setTimeout(async () => {
       // fetch
@@ -61,26 +64,31 @@ const UsersSidebar: FC<UsersSidebarProps> = ({}) => {
         <ScrollAreaViewport>
           <div className="flex flex-col space-y-3 mt-1 px-3">
             {users.length > 0 &&
-              users.map((user) => (
-                <div
-                  key={`${user.id}`}
-                  className="border p-2 rounded-md flex space-x-2 cursor-pointer hover:bg-secondary"
-                >
-                  <Image
-                    src={getImageUrl(user.image, user.email)}
-                    alt="avatar"
-                    width={48}
-                    height={48}
-                    className="rounded-full"
-                  />
-                  <div className="flex-1 flex flex-col justify-center overflow-hidden">
-                    <Text className="truncate font-bold">{user.email}</Text>
-                    <Text className="truncate capitalize" size="sm">
-                      {user.name}
-                    </Text>
-                  </div>
-                </div>
-              ))}
+              session?.user?.email &&
+              users.map((user) =>
+                session.user?.email !== user.email ? (
+                  <Link
+                    key={`${user.id}`}
+                    href={`/chat/${session.user?.email}/${user.email}`}
+                  >
+                    <div className="border p-2 rounded-md flex space-x-2 cursor-pointer hover:bg-secondary">
+                      <Image
+                        src={getImageUrl(user.image, user.email)}
+                        alt="avatar"
+                        width={48}
+                        height={48}
+                        className="rounded-full"
+                      />
+                      <div className="flex-1 flex flex-col justify-center overflow-hidden">
+                        <Text className="truncate font-bold">{user.email}</Text>
+                        <Text className="truncate capitalize" size="sm">
+                          {user.name}
+                        </Text>
+                      </div>
+                    </div>
+                  </Link>
+                ) : null
+              )}
             {users.length === 0 &&
               Array.from({ length: 10 })
                 .map((_, i) => i + 1)

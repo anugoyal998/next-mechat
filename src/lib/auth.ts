@@ -81,7 +81,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    newUser: "/",
+    newUser: "/chat",
     verifyRequest: "/auth/verify-request",
     error: "/auth/error",
     signIn: "/auth/signin"
