@@ -7,12 +7,23 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   isLoading?: boolean;
   isRequired?: boolean;
+  inputClassName?: string;
+  labelSize?: "default" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | null | undefined;
 }
 
-const Input = ({ icon, className, label, isRequired, isLoading, ...props }: InputProps) => {
+const Input = ({
+  icon,
+  className,
+  inputClassName,
+  label,
+  labelSize,
+  isRequired,
+  isLoading,
+  ...props
+}: InputProps) => {
   return (
     <div className={cn("flex flex-col space-y-1", className)}>
-      <Text size="xs" className="font-semibold">
+      <Text size={ labelSize ? labelSize : "xl"} className="font-semibold">
         {label} {isRequired && <span className="text-primary">*</span>}
       </Text>
       <div className={cn("border flex rounded-md")}>
@@ -21,7 +32,10 @@ const Input = ({ icon, className, label, isRequired, isLoading, ...props }: Inpu
         </div>
         <input
           {...props}
-          className="w-full p-3 outline-none disabled:cursor-not-allowed disabled:bg-gray-100"
+          className={cn(
+            "w-full p-3 outline-none disabled:cursor-not-allowed disabled:bg-gray-100",
+            inputClassName
+          )}
           disabled={isLoading}
         />
       </div>

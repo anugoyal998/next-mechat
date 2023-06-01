@@ -4,8 +4,7 @@ import Link from "next/link";
 import { buttonVariants } from "./ui/Button";
 import SignOutButton from "./SignOutButton";
 import Menu from "./Menu";
-
-interface NavbarProps {}
+import { MessageCircle } from "lucide-react";
 
 const Navbar = async ({}) => {
   const session = await getServerSession(authOptions);
@@ -16,14 +15,18 @@ const Navbar = async ({}) => {
           href="/"
           className={buttonVariants({
             variant: "link",
-            className: "font-bold text-xl",
+            className: "font-bold text-xl space-x-1",
           })}
         >
-          MeChat
+          <MessageCircle />
+          <p>MeChat</p>
         </Link>
         <div className="md:hidden">
           {" "}
-          <Menu isSession={session ? true : false} email={session?.user?.email} />
+          <Menu
+            isSession={session ? true : false}
+            email={session?.user?.email}
+          />
         </div>
         <div className="hidden md:flex gap-4">
           <Link
