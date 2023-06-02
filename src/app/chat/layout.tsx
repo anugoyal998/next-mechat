@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Navbar from "@/components/Navbar";
 import Route from "@/components/Route";
@@ -25,7 +25,7 @@ const layout = ({ children }: { children: ReactNode }) => {
         <Navbar setOpen={setOpen} setToastData={setToastData} />
         <div className="pt-20 relative">
           <UsersSidebar />
-          <main
+          <div
             className="fixed left-[250px] bg-secondary border-r border-slate-300 shadow-sm p-3 flex justify-center items-center"
             style={{
               height: "calc(100vh - 5rem)",
@@ -33,7 +33,7 @@ const layout = ({ children }: { children: ReactNode }) => {
             }}
           >
             {children}
-          </main>
+          </div>
         </div>
       </div>
     </Route>

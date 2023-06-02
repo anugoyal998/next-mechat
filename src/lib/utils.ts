@@ -26,6 +26,9 @@ function hashCode(str: string) {
 
 function intToRGB(i: number) {
   var c = (i & 0x00ffffff).toString(16).toUpperCase();
-  console.log("00000".substring(0, 6 - c.length) + c)
   return "00000".substring(0, 6 - c.length) + c;
+}
+
+export function toPusherKey(key: string){
+  return key.replace(/:/g,'__')
 }

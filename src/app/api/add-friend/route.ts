@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { pusherServer } from "@/lib/pusher";
+import { toPusherKey } from "@/lib/utils";
 
 export async function POST(req: Request) {
   try {
@@ -44,8 +46,7 @@ export async function POST(req: Request) {
     if (friendRequest) {
       return NextResponse.json(
         {
-          msg:
-            "Your friend have already been sent you request. Kindly accept that.",
+          msg: "Your friend have already been sent you request. Kindly accept that.",
         },
         { status: 400 }
       );
@@ -56,10 +57,14 @@ export async function POST(req: Request) {
         recEmail: friend.email as string,
       },
     });
-    return NextResponse.json(
-      { msg: "Friend request sent" },
-      { status: 200 }
+    pusherServer.trigger(
+      toPusherKey(`user:${friendEmail}:incoming_friend_requests`),
+      "incoming_friend_requests",
+      {
+        sndEmail: user.email as string,
+      }
     );
+    return NextResponse.json({ msg: "Friend request sent" }, { status: 200 });
   } catch (err) {
     return NextResponse.json({ msg: "Server error" }, { status: 500 });
   }
