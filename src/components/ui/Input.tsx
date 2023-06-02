@@ -3,8 +3,8 @@ import { cn } from "../../lib/utils";
 import Text from "./Text";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  icon: React.ReactNode;
-  label: string;
+  icon?: React.ReactNode;
+  label?: string;
   isLoading?: boolean;
   isRequired?: boolean;
   inputClassName?: string;
@@ -24,7 +24,7 @@ const Input = ({
   return (
     <div className={cn("flex flex-col space-y-1", className)}>
       <Text size={ labelSize ? labelSize : "xl"} className="font-semibold">
-        {label} {isRequired && <span className="text-primary">*</span>}
+        {label} {isRequired && <span>*</span>}
       </Text>
       <div className={cn("border flex rounded-md")}>
         <div className="bg-gray-100 flex justify-center items-center">

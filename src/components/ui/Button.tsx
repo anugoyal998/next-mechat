@@ -11,7 +11,7 @@ export const buttonVariants = cva(
         default: "bg-black text-white hover:opacity-90",
         destructive: "text-white hover:bg-red-600",
         link: "bg-transparent underline-offset-4 hover:underline text-black hover:bg-transparent",
-        ghost: "bg-transparent hover:bg-black hover:text-white hover:opacity-50 data-[state=open]:bg-transparent"
+        ghost: "bg-transparent hover:bg-black hover:opacity-20 hover:text-white data-[state=open]:bg-transparent"
       },
       size: {
         default: "h-10 py-2 px-4",

@@ -1,5 +1,8 @@
+"use client";
+
 import Text from "@/components/ui/Text";
 import { MessageCircle } from "lucide-react";
+import { Metadata } from "next";
 import { FC } from "react";
 
 interface pageProps {}

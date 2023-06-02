@@ -11,7 +11,21 @@ export function getImageUrl(
 ) {
   return url
     ? url
-    : `https://ui-avatars.com/api/?background=random&name=${
-        email?.split("@")?.[0]
-      }`;
+    : `https://ui-avatars.com/api/?background=${intToRGB(
+        hashCode(email ?? "email")
+      )}&name=${email?.split("@")?.[0]}`;
+}
+
+function hashCode(str: string) {
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return hash;
+}
+
+function intToRGB(i: number) {
+  var c = (i & 0x00ffffff).toString(16).toUpperCase();
+  console.log("00000".substring(0, 6 - c.length) + c)
+  return "00000".substring(0, 6 - c.length) + c;
 }
