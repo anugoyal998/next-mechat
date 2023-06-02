@@ -4,3 +4,7 @@ export type GetUserTextResponseType = {
     email: string | null;
     image: string | null;
 }
+
+export type GetFriendRequestType = {
+    sndEmail: string;
+}

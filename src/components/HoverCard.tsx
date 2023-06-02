@@ -10,11 +10,12 @@ import {
 interface HoverCardProps {
   cardTrigger: ReactNode;
   card: ReactNode;
+  open?: boolean;
 }
 
-const HoverCard: FC<HoverCardProps> = ({ cardTrigger, card }) => {
+const HoverCard: FC<HoverCardProps> = ({ cardTrigger, card, open }) => {
   return (
-    <HoverCardRoot>
+    <HoverCardRoot open={open} >
       <HoverCardTrigger asChild>{cardTrigger}</HoverCardTrigger>
       <HoverCardPortal>
         <HoverCardContent className="z-50">
