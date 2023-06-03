@@ -22,13 +22,7 @@ const Toast = ({ open, onOpenChange, toastData }: ToastProps) => {
       <ToastRoot
         open={open}
         onOpenChange={onOpenChange}
-        className={
-          toastData
-            ? toastData.type === "success"
-              ? "bg-black"
-              : "bg-red-500"
-            : ""
-        }
+        className={`${toastData?.type === "success" && "bg-black"} ${toastData?.type === "error" && "bg-red-500"}`}
       >
         <ToastTitle className={toastData ? "text-white" : "text-black"}>
           {toastData?.text}

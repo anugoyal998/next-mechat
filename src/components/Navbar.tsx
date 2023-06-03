@@ -16,8 +16,6 @@ import { styled } from "@mui/material/styles";
 import ShowFriendRequests from "./ShowFriendRequests";
 import { GetFriendRequestType } from "@/types/api.types";
 import io from "socket.io-client";
-import { pusherClient } from "@/lib/pusher";
-import { toPusherKey } from "@/lib/utils";
 
 const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -40,22 +38,31 @@ const Navbar = ({ setOpen, setToastData }: NavbarProps) => {
     []
   );
 
-    const socketInit = async () => {
-      await fetch("/api/socket_io")
-      /**@ts-ignore */
-      socket = io(undefined,{
-        path: "/api/socket_io",
-      })
+  const socketInit = async () => {
+    await fetch("/api/socket_io");
+    /**@ts-ignore */
+    socket = io(undefined, {
+      path: "/api/socket_io",
+    });
 
-      socket.on("connect",() => {
-        /**@ts-ignore */
-        console.log(socket.id)
-      })
-    }
+    const handleIncomingFriendRequest = (data: GetFriendRequestType) => {
+      setFriendRequest((prev) =>
+        prev.find((f) => f.sndEmail === data.sndEmail)
+          ? prev
+          : [{ sndEmail: data.sndEmail }, ...prev]
+      );
+    };
+    socket.on(
+      `incoming_friend_request:${session?.user?.email as string}`,
+      handleIncomingFriendRequest
+    );
+  };
 
   useEffect(() => {
-    socketInit()
-  },[])
+    socketInit();
+    /**@ts-ignore */
+    if (socket) return () => socket.disconnect();
+  }, []);
   useEffect(() => {
     (async () => {
       try {
@@ -66,32 +73,6 @@ const Navbar = ({ setOpen, setToastData }: NavbarProps) => {
         setFriendRequest(friendRequest);
       } catch (err) {}
     })();
-    // pusherClient.subscribe(
-    //   toPusherKey(
-    //     `user:${session?.user?.email as string}:incoming_friend_requests`
-    //   )
-    // );
-
-    // const incoming_friend_requests_handler = () => {
-    //   console.log("new friend request");
-    // };
-
-    // pusherClient.bind(
-    //   "incoming_friend_requests",
-    //   incoming_friend_requests_handler
-    // );
-
-    // return () => {
-    //   pusherClient.unsubscribe(
-    //     toPusherKey(
-    //       `user:${session?.user?.email as string}:incoming_friend_requests`
-    //     )
-    //   );
-    //   pusherClient.unbind(
-    //     "incoming_friend_requests",
-    //     incoming_friend_requests_handler
-    //   );
-    // };
   }, []);
   return (
     <div className="fixed backdrop-blur-sm bg-white/75 z-50 top-0 left-0 right-0 h-20 border-b border-slate-300 shadow-sm flex items-center justify-between">

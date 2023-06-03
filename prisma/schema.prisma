@@ -63,13 +63,12 @@ enum FriendRequestStatus {
 }
 
 model FriendRequest {
-  sndEmail  String
-  recEmail  String
+  sndEmail  String @unique
+  recEmail  String @unique
   status    FriendRequestStatus @default(PENDING)
   user      User                @relation(fields: [recEmail], references: [email], onDelete: Cascade)
   createdAt DateTime            @default(now())
   updatedAt DateTime            @updatedAt
 
   @@id([sndEmail, recEmail])
-  @@unique([sndEmail, recEmail])
 }

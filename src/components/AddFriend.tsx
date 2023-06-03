@@ -31,17 +31,17 @@ const AddFriend: FC<AddFriendProps> = ({
       const res = await fetch("/api/add-friend", {
         method: "POST",
         body: JSON.stringify({ friendEmail }),
-      })
+      });
       const json = await res.json();
       if(res.ok){
-        setToastData({ type: ToastDataTypeEnum.Success, text: json?.msg })
+        setToastData({ type: ToastDataTypeEnum.Success, text: json?.msg });
       }else{
-        setToastData({ type: ToastDataTypeEnum.Error, text: json?.msg })
+        setToastData({ type: ToastDataTypeEnum.Error, text: json?.msg });
       }
       setOpen(true);
     } catch (err) {
       /**@ts-ignore */
-      setToastData({ type: ToastDataTypeEnum.Success, text: err?.msg })
+      setToastData({ type: ToastDataTypeEnum.Error, text: err?.msg });
       setOpen(true);
     } finally {
       setIsLoading(false);
