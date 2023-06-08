@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, Dispatch, SetStateAction } from "react";
 import Link from "next/link";
 import Button, { buttonVariants } from "./ui/Button";
 import SignOutButton from "./SignOutButton";
@@ -27,16 +27,22 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
 interface NavbarProps {
   setOpen: (open: boolean) => void;
   setToastData: (toastData: ToastDataType | undefined) => void;
+  friendRequest: GetFriendRequestType[];
+  setFriendRequest: Dispatch<SetStateAction<GetFriendRequestType[]>>;
+  setChatFetch: (fn: (prev: boolean) => boolean) => void;
 }
 
 /**@ts-ignore */
 let socket;
 
-const Navbar = ({ setOpen, setToastData }: NavbarProps) => {
+const Navbar = ({
+  setOpen,
+  setToastData,
+  friendRequest,
+  setFriendRequest,
+  setChatFetch,
+}: NavbarProps) => {
   const session = useContext(RouteContext);
-  const [friendRequest, setFriendRequest] = useState<GetFriendRequestType[]>(
-    []
-  );
 
   const socketInit = async () => {
     await fetch("/api/socket_io");
@@ -56,23 +62,20 @@ const Navbar = ({ setOpen, setToastData }: NavbarProps) => {
       `incoming_friend_request:${session?.user?.email as string}`,
       handleIncomingFriendRequest
     );
+
+    socket.on(
+      `friend_request_updated:${session?.user?.email as string}`,
+      () => {
+        console.log('friend request updated')
+        setChatFetch((prev) => !prev);
+      }
+    );
   };
 
   useEffect(() => {
     socketInit();
     /**@ts-ignore */
     if (socket) return () => socket.disconnect();
-  }, []);
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await fetch("/api/get-friend-request").then((res) =>
-          res.json()
-        );
-        const friendRequest = data as GetFriendRequestType[];
-        setFriendRequest(friendRequest);
-      } catch (err) {}
-    })();
   }, []);
   return (
     <div className="fixed backdrop-blur-sm bg-white/75 z-50 top-0 left-0 right-0 h-20 border-b border-slate-300 shadow-sm flex items-center justify-between">
@@ -137,6 +140,8 @@ const Navbar = ({ setOpen, setToastData }: NavbarProps) => {
                 image={session?.user?.image}
                 name={session?.user?.name}
                 friendRequest={friendRequest}
+                recEmail={session?.user?.email}
+                setChatFetch={setChatFetch}
               />
             }
           />

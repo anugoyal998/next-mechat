@@ -50,8 +50,24 @@ CREATE TABLE `VerificationToken` (
     UNIQUE INDEX `VerificationToken_identifier_token_key`(`identifier`, `token`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `FriendRequest` (
+    `id` VARCHAR(191) NOT NULL,
+    `sndEmail` VARCHAR(191) NOT NULL,
+    `recEmail` VARCHAR(191) NOT NULL,
+    `status` ENUM('ACCEPTED', 'PENDING', 'REJECTED') NOT NULL DEFAULT 'PENDING',
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `FriendRequest_sndEmail_key`(`sndEmail`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `Account` ADD CONSTRAINT `Account_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Session` ADD CONSTRAINT `Session_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `FriendRequest` ADD CONSTRAINT `FriendRequest_sndEmail_fkey` FOREIGN KEY (`sndEmail`) REFERENCES `User`(`email`) ON DELETE CASCADE ON UPDATE CASCADE;

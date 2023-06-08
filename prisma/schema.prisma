@@ -38,14 +38,13 @@ model Session {
 }
 
 model User {
-  id            String          @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String?         @unique
+  email         String?   @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  FriendRequest FriendRequest[]
 }
 
 model VerificationToken {
@@ -63,12 +62,12 @@ enum FriendRequestStatus {
 }
 
 model FriendRequest {
-  sndEmail  String @unique
-  recEmail  String @unique
+  id        String              @id @default(cuid())
+  sndEmail  String
+  recEmail  String
   status    FriendRequestStatus @default(PENDING)
-  user      User                @relation(fields: [recEmail], references: [email], onDelete: Cascade)
   createdAt DateTime            @default(now())
   updatedAt DateTime            @updatedAt
 
-  @@id([sndEmail, recEmail])
+  @@index([sndEmail, recEmail])
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useEffect, useState } from "react";
+import { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from "react";
 import Input from "./ui/Input";
 import { Loader2, Search } from "lucide-react";
 import { GetUserTextResponseType } from "@/types/api.types";
@@ -17,13 +17,27 @@ import {
 import Text from "./ui/Text";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-interface UsersSidebarProps {}
+import { Session } from "next-auth";
+import { RouteContext } from "./Route";
 
-const UsersSidebar: FC<UsersSidebarProps> = ({}) => {
-  const [text, setText] = useState("");
-  const [users, setUsers] = useState<GetUserTextResponseType[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const { data: session } = useSession();
+interface UsersSidebarProps {
+  text: string;
+  setText: Dispatch<SetStateAction<string>>;
+  isLoading: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  users: GetUserTextResponseType[];
+  setUsers: Dispatch<SetStateAction<GetUserTextResponseType[]>>;
+}
+
+const UsersSidebar: FC<UsersSidebarProps> = ({
+  text,
+  setText,
+  isLoading,
+  setIsLoading,
+  users,
+  setUsers,
+}) => {
+  const session = useContext(RouteContext)
   useEffect(() => {
     const getData = setTimeout(async () => {
       // fetch
@@ -66,7 +80,7 @@ const UsersSidebar: FC<UsersSidebarProps> = ({}) => {
             {users.length > 0 &&
               session?.user?.email &&
               users.map((user) =>
-                session.user?.email !== user.email ? (
+                session?.user?.email !== user.email ? (
                   <Link
                     key={`${user.id}`}
                     href={`/chat/${session.user?.email}/${user.email}`}

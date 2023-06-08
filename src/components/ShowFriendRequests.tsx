@@ -11,7 +11,6 @@ import {
 import Text from "./ui/Text";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
-import { FC } from "react";
 import Button from "./ui/Button";
 
 interface ShowFriendRequestsProps {
@@ -19,6 +18,8 @@ interface ShowFriendRequestsProps {
   image: string | null | undefined;
   name: string | null | undefined;
   friendRequest: GetFriendRequestType[];
+  recEmail: string | null | undefined;
+  setChatFetch: (fn: (prev: boolean) => boolean) => void;
 }
 
 const ShowFriendRequests = ({
@@ -26,7 +27,19 @@ const ShowFriendRequests = ({
   image,
   name,
   friendRequest,
+  recEmail,
+  setChatFetch,
 }: ShowFriendRequestsProps) => {
+  async function handleFriendRequestAction(sndEmail: string, action: string) {
+    try {
+      await fetch("/api/update-friend-request", {
+        method: "POST",
+        body: JSON.stringify({ action, sndEmail, recEmail }),
+      });
+      setChatFetch((prev) => !prev);
+    } catch (err) {}
+  }
+
   return (
     <div className="flex flex-col gap-[7px]">
       <Image
@@ -58,10 +71,24 @@ const ShowFriendRequests = ({
                     className="flex items-center space-x-2"
                   >
                     <Text>{fr.sndEmail}</Text>
-                    <Button variant="link" size="sm" className="px-1">
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="px-1"
+                      onClick={(e) =>
+                        handleFriendRequestAction(fr.sndEmail, "ACCEPTED")
+                      }
+                    >
                       <CheckCircleRoundedIcon color="success" />
                     </Button>
-                    <Button variant="link" size="sm" className="px-1">
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="px-1"
+                      onClick={(e) =>
+                        handleFriendRequestAction(fr.sndEmail, "REJECTED")
+                      }
+                    >
                       <CancelRoundedIcon color="error" />
                     </Button>
                   </div>
