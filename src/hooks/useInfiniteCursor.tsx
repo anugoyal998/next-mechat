@@ -5,7 +5,7 @@ export default function useInfiniteCursor<DataType, AxiosResponseType>(axiosConf
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(false)
   const [data, setData] = useState<DataType[]>([])
-  const [hasMore, setHasMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
   const [newCursor, setNewCursor] = useState('$')
 
   useEffect(() => {

@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  useContext,
-  useEffect,
-  useState
-} from "react";
+import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import Button, { buttonVariants } from "./ui/Button";
 import SignOutButton from "./SignOutButton";
@@ -20,6 +16,7 @@ import ShowFriendRequests from "./ShowFriendRequests";
 import { GetFriendRequestType } from "@/types/api.types";
 import io from "socket.io-client";
 import { useToastData, useToastOpen } from "@/zustand/toast.zustand";
+import { useFriendRequestFetch } from "@/zustand/friendRequestFetch.zustand";
 
 const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -37,7 +34,10 @@ const Navbar = () => {
     []
   );
   const [isLoading, setIsLoading] = useState(false);
-  const [reFetch, setReFetch] = useState(false)
+  const [reFetch, setReFetch] = useFriendRequestFetch((state) => [
+    state.friendRequestFetch,
+    state.setFriendRequestFetch,
+  ]);
   const setOpen = useToastOpen((state) => state.setOpen);
   const setToastData = useToastData((state) => state.setToastData);
 
@@ -76,7 +76,7 @@ const Navbar = () => {
         const data = await fetch("/api/get-friend-request").then((res) =>
           res.json()
         );
-        setFriendRequest(data?.data as GetFriendRequestType[]); 
+        setFriendRequest(data?.data as GetFriendRequestType[]);
       } catch (err) {
       } finally {
         setIsLoading(false);

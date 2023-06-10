@@ -20,7 +20,7 @@ interface ShowFriendRequestsProps {
   name: string | null | undefined;
   friendRequest: GetFriendRequestType[];
   recEmail: string | null | undefined;
-  setReFetch: Dispatch<SetStateAction<boolean>>;
+  setReFetch: (fn: (prev: boolean) => boolean) => void;
 }
 
 const ShowFriendRequests = ({

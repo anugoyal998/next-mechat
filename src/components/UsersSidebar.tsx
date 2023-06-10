@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState, useRef, useCallback, forwardRef } from "react";
+import { useContext, useState, useRef, useCallback, forwardRef, useEffect } from "react";
 import Input from "./ui/Input";
 import { Skeleton } from "./ui/Skeleton";
 import Text from "./ui/Text";
@@ -16,11 +16,13 @@ import { RouteContext } from "./Route";
 
 import { getImageUrl } from "@/lib/utils";
 import useInfiniteCursor from "@/hooks/useInfiniteCursor";
+import { useFriendRequestFetch } from "@/zustand/friendRequestFetch.zustand";
 
 const UsersSidebar = () => {
   const session = useContext(RouteContext);
   const [text, setText] = useState("");
   const [cursor, setCursor] = useState("$");
+  const reFetch = useFriendRequestFetch((state) => state.friendRequestFetch)
   const {
     isLoading,
     hasMore,
@@ -29,8 +31,13 @@ const UsersSidebar = () => {
   } = useInfiniteCursor<GetUserTextResponseType, any>(
     { method: "GET", url: `/api/get-user/${text ? text : "*"}/${cursor}` },
     cursor,
-    text
+    text,
+    reFetch
   );
+
+  useEffect(() => {
+    setCursor("$")
+  },[reFetch])
 
   const observer = useRef();
   /**@ts-ignore */
@@ -91,7 +98,8 @@ const UsersSidebar = () => {
               )
             ) : null
           )}
-        {users.length === 0 && <SkeletonComponent />}
+        {users.length === 0 && hasMore && <SkeletonComponent />}
+        {users.length === 0 && !hasMore && (<div>Nothing to Show</div>)}
       </div>
     </div>
   );
