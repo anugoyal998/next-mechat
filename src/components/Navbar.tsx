@@ -126,7 +126,6 @@ const Navbar = ({
             }
           />
           <HoverCard
-            open
             cardTrigger={
               <Button variant="link">
                 <StyledBadge badgeContent={friendRequest.length} max={99}>

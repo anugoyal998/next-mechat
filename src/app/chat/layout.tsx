@@ -40,10 +40,10 @@ const layout = ({ children }: { children: ReactNode }) => {
         setUsersSidebarLoading(true);
         const responses = await Promise.all([
           fetch("/api/get-friend-request").then((res) => res.json()),
-          fetch(`/api/get-user/${text ? text : "*"}`).then((res) => res.json()),
+          // fetch(`/api/get-user/${text ? text : "*"}/$`).then((res) => res.json()),
         ]);
         setFriendRequest(responses[0]?.data as GetFriendRequestType[]);
-        setUsers(responses[1] as GetUserTextResponseType[]);
+        // setUsers(responses[1]?.data as GetUserTextResponseType[]);
       } catch (err) {
       } finally {
         setUsersSidebarLoading(false);

@@ -29,6 +29,25 @@ function intToRGB(i: number) {
   return "00000".substring(0, 6 - c.length) + c;
 }
 
-export function toPusherKey(key: string){
-  return key.replace(/:/g,'__')
+export function toPusherKey(key: string) {
+  return key.replace(/:/g, "__");
+}
+
+export function fetchAll<T, U>(
+  data: U[],
+  cb: (
+    resolve: (value: T | PromiseLike<T | null> | null) => void,
+    reject: (reason?: any) => void,
+    ele: U
+  ) => void
+) {
+  let promises: Promise<T | null>[] = [];
+  for (let i = 0; i < data.length; i++) {
+    promises.push(
+      new Promise((resolve, reject) => {
+        cb(resolve, reject, data[i]);
+      })
+    );
+  }
+  return promises;
 }
