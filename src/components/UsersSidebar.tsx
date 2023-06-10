@@ -1,17 +1,11 @@
 "use client";
 
-import {
-  useContext,
-  useState,
-  useRef,
-  useCallback,
-  forwardRef,
-} from "react";
+import { useContext, useState, useRef, useCallback, forwardRef } from "react";
 import Input from "./ui/Input";
 import { Skeleton } from "./ui/Skeleton";
 import Text from "./ui/Text";
 import Link from "next/link";
-import * as Tooltip from "@/components/ui/Tooltip"
+import * as Tooltip from "@/components/ui/Tooltip";
 import Image from "next/image";
 
 import { Loader2, Search } from "lucide-react";
@@ -21,7 +15,7 @@ import { Session } from "next-auth";
 import { RouteContext } from "./Route";
 
 import { getImageUrl } from "@/lib/utils";
-import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import useInfiniteCursor from "@/hooks/useInfiniteCursor";
 
 const UsersSidebar = () => {
   const session = useContext(RouteContext);
@@ -32,7 +26,11 @@ const UsersSidebar = () => {
     hasMore,
     data: users,
     newCursor,
-  } = useInfiniteScroll(text, cursor);
+  } = useInfiniteCursor<GetUserTextResponseType, any>(
+    { method: "GET", url: `/api/get-user/${text ? text : "*"}/${cursor}` },
+    cursor,
+    text
+  );
 
   const observer = useRef();
   /**@ts-ignore */

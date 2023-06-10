@@ -1,6 +1,6 @@
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { fetchAll } from "@/lib/utils";
+import { TAKE_THRESHOLD, fetchAll } from "@/lib/utils";
 import { GetUserTextResponseType } from "@/types/api.types";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
@@ -11,8 +11,6 @@ type friendRequestsType = {
     recEmail: string;
 }
 
-const TAKE_THRESHOLD = 4;
-
 export async function GET(
   req: Request,
   { params }: { params: { text: string; cursor: string } }
@@ -22,11 +20,10 @@ export async function GET(
     let friendRequests: friendRequestsType[] = []
     let userEmail: string = ''
     try {
-        // const user = await getServerSession(authOptions).then((res) => res?.user);
-        // if (!user) {
-        //     return NextResponse.json({ msg: "UnAuthorized"}, { status: 400})
-        // }
-        let user = { email: "anubhav@conceptdash.ca"}
+        const user = await getServerSession(authOptions).then((res) => res?.user);
+        if (!user) {
+            return NextResponse.json({ msg: "UnAuthorized"}, { status: 400})
+        }
         userEmail = user.email as string
         friendRequests = await db.friendRequest.findMany({
             where: {

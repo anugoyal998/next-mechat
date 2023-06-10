@@ -29,7 +29,7 @@ const ShowFriendRequests = ({
   name,
   friendRequest,
   recEmail,
-  setReFetch,
+  setReFetch
 }: ShowFriendRequestsProps) => {
   async function handleFriendRequestAction(sndEmail: string, action: string) {
     try {
