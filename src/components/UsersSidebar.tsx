@@ -5,10 +5,8 @@ import {
   FC,
   SetStateAction,
   useContext,
-  useEffect,
   useState,
-  useRef,
-  useCallback,
+  useEffect
 } from "react";
 import Input from "./ui/Input";
 import { Loader2, Search } from "lucide-react";
@@ -25,10 +23,7 @@ import {
 } from "@/components/ui/ScrollArea";
 import Text from "./ui/Text";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { Session } from "next-auth";
 import { RouteContext } from "./Route";
-import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 
 interface UsersSidebarProps {
   text: string;
@@ -39,52 +34,29 @@ interface UsersSidebarProps {
   setUsers: Dispatch<SetStateAction<GetUserTextResponseType[]>>;
 }
 
-const UsersSidebar: FC<UsersSidebarProps> = ({
-  text,
-  setText,
-  isLoading,
-  setIsLoading,
-  users,
-  setUsers,
-}) => {
+const UsersSidebar = () => {
   const session = useContext(RouteContext);
-  const [cursor, setCursor] = useState<string>("$");
-  const observer = useRef();
-  /**@ts-ignore */
-  const lastUserElement = useCallback((node) => {
-    if(isLoading)return
-    /**@ts-ignore */
-    if(observer.current)observer.current.disconnect();
-    /**@ts-ignore */
-    observer.current = new IntersectionObserver(entries => {
-      if(entries[0].isIntersecting){
-        // console.log('visible') // change cursor
-      }
-    })
-    /**@ts-ignore */
-    if(node)observer.current.observe(node);
-
-    console.log(node)
-  },[isLoading]);
+  const [text, setText] = useState('')
+  const [cursor, setCursor] = useState('$')
+  const [newCursor, setNewCursor] = useState('$')
+  const [isLoading, setIsLoading] = useState(false)
+  const [users, setUsers] = useState<GetUserTextResponseType[]>([])
 
   useEffect(() => {
     const getData = setTimeout(async () => {
-      // fetch
       try {
-        setIsLoading(true);
+        setIsLoading(true)
         const { data } = await fetch(
           `/api/get-user/${text ? text : "*"}/${cursor}`
         ).then((res) => res.json());
         const userData = data as GetUserTextResponseType[];
         setUsers((prev) => [...prev, ...userData]);
-      } catch (err) {
-      } finally {
-        setIsLoading(false);
-      }
-    }, 500);
+      } catch (err) {} finally { setIsLoading(false) }
+    },500)
 
     return () => clearTimeout(getData);
-  }, [text]);
+  },[text])
+
 
   return (
     <div
@@ -106,6 +78,7 @@ const UsersSidebar: FC<UsersSidebarProps> = ({
         onChange={(e) => {
           setText(e.target.value);
           setCursor("$");
+          setNewCursor("$");
           setUsers([]);
         }}
       />
@@ -121,7 +94,7 @@ const UsersSidebar: FC<UsersSidebarProps> = ({
                       key={`${user.id}`}
                       href={`/chat/${session.user?.email}/${user.email}`}
                        /**@ts-ignore */
-                      ref={lastUserElement}
+                      // ref={lastUserElement}
                     >
                       <div className="border p-2 rounded-md flex space-x-2 cursor-pointer hover:bg-secondary">
                         <Image

@@ -1,6 +1,10 @@
 "use client";
 
-import { useContext, useEffect, Dispatch, SetStateAction } from "react";
+import {
+  useContext,
+  useEffect,
+  useState
+} from "react";
 import Link from "next/link";
 import Button, { buttonVariants } from "./ui/Button";
 import SignOutButton from "./SignOutButton";
@@ -9,13 +13,13 @@ import { MessageCircle } from "lucide-react";
 import Image from "next/image";
 import AddFriend from "./AddFriend";
 import { RouteContext } from "./Route";
-import { ToastDataType } from "@/types";
 import HoverCard from "./HoverCard";
 import Badge, { BadgeProps } from "@mui/material/Badge";
 import { styled } from "@mui/material/styles";
 import ShowFriendRequests from "./ShowFriendRequests";
 import { GetFriendRequestType } from "@/types/api.types";
 import io from "socket.io-client";
+import { useToastData, useToastOpen } from "@/zustand/toast.zustand";
 
 const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -24,25 +28,18 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
   },
 }));
 
-interface NavbarProps {
-  setOpen: (open: boolean) => void;
-  setToastData: (toastData: ToastDataType | undefined) => void;
-  friendRequest: GetFriendRequestType[];
-  setFriendRequest: Dispatch<SetStateAction<GetFriendRequestType[]>>;
-  setChatFetch: (fn: (prev: boolean) => boolean) => void;
-}
-
 /**@ts-ignore */
 let socket;
 
-const Navbar = ({
-  setOpen,
-  setToastData,
-  friendRequest,
-  setFriendRequest,
-  setChatFetch,
-}: NavbarProps) => {
+const Navbar = () => {
   const session = useContext(RouteContext);
+  const [friendRequest, setFriendRequest] = useState<GetFriendRequestType[]>(
+    []
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [reFetch, setReFetch] = useState(false)
+  const setOpen = useToastOpen((state) => state.setOpen);
+  const setToastData = useToastData((state) => state.setToastData);
 
   const socketInit = async () => {
     await fetch("/api/socket_io");
@@ -66,17 +63,33 @@ const Navbar = ({
     socket.on(
       `friend_request_updated:${session?.user?.email as string}`,
       () => {
-        console.log('friend request updated')
-        setChatFetch((prev) => !prev);
+        console.log("friend request updated");
+        setReFetch((prev) => !prev);
       }
     );
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetch("/api/get-friend-request").then((res) =>
+          res.json()
+        );
+        setFriendRequest(data?.data as GetFriendRequestType[]); 
+      } catch (err) {
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, [reFetch]);
 
   useEffect(() => {
     socketInit();
     /**@ts-ignore */
     if (socket) return () => socket.disconnect();
   }, []);
+
   return (
     <div className="fixed backdrop-blur-sm bg-white/75 z-50 top-0 left-0 right-0 h-20 border-b border-slate-300 shadow-sm flex items-center justify-between">
       <div className="container max-w-7xl mx-auto w-full flex justify-between items-center">
@@ -140,7 +153,7 @@ const Navbar = ({
                 name={session?.user?.name}
                 friendRequest={friendRequest}
                 recEmail={session?.user?.email}
-                setChatFetch={setChatFetch}
+                setReFetch={setReFetch}
               />
             }
           />

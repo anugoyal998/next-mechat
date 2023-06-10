@@ -9,19 +9,22 @@ import {
   ToastAction,
   ToastViewport,
 } from "./ui/RadixToast";
+import { useToastData, useToastOpen } from "@/zustand/toast.zustand";
 
-interface ToastProps {
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  toastData?: ToastDataType;
-}
+// interface ToastProps {
+//   open?: boolean;
+//   onOpenChange?: (open: boolean) => void;
+//   toastData?: ToastDataType;
+// }
 
-const Toast = ({ open, onOpenChange, toastData }: ToastProps) => {
+const Toast = () => {
+  const [open, setOpen] = useToastOpen((state) => [state.open, state.setOpen]);
+  const toastData = useToastData((state) => state.toastData);
   return (
     <ToastProvider swipeDirection="right">
       <ToastRoot
         open={open}
-        onOpenChange={onOpenChange}
+        onOpenChange={setOpen}
         className={`${toastData?.type === "success" && "bg-black"} ${toastData?.type === "error" && "bg-red-500"}`}
       >
         <ToastTitle className={toastData ? "text-white" : "text-black"}>

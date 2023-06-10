@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react"
 import { getImageUrl } from "@/lib/utils";
 import { GetFriendRequestType } from "@/types/api.types";
 import Image from "next/image";
@@ -19,7 +20,7 @@ interface ShowFriendRequestsProps {
   name: string | null | undefined;
   friendRequest: GetFriendRequestType[];
   recEmail: string | null | undefined;
-  setChatFetch: (fn: (prev: boolean) => boolean) => void;
+  setReFetch: Dispatch<SetStateAction<boolean>>;
 }
 
 const ShowFriendRequests = ({
@@ -28,7 +29,7 @@ const ShowFriendRequests = ({
   name,
   friendRequest,
   recEmail,
-  setChatFetch,
+  setReFetch,
 }: ShowFriendRequestsProps) => {
   async function handleFriendRequestAction(sndEmail: string, action: string) {
     try {
@@ -36,7 +37,7 @@ const ShowFriendRequests = ({
         method: "POST",
         body: JSON.stringify({ action, sndEmail, recEmail }),
       });
-      setChatFetch((prev) => !prev);
+      setReFetch((prev) => !prev);
     } catch (err) {}
   }
 

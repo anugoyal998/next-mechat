@@ -37,7 +37,7 @@ export async function GET(
                 ]
             },
             select: {id: true, sndEmail: true, recEmail: true},
-            orderBy: { updatedAt: 'asc'},
+            orderBy: { updatedAt: 'desc'},
             take: TAKE_THRESHOLD,
             ...(cursor !== "$" && { cursor: { id: cursor }})
         })
