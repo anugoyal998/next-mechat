@@ -2,8 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
-  previewFeatures = ["fullTextSearch","fullTextIndex"]
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -69,6 +69,19 @@ model FriendRequest {
   status    FriendRequestStatus @default(PENDING)
   createdAt DateTime            @default(now())
   updatedAt DateTime            @updatedAt
+
+  @@index([sndEmail, recEmail])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  type      String
+  sndEmail  String
+  recEmail  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  text      String?
+  uploadId  String?
 
   @@index([sndEmail, recEmail])
 }
