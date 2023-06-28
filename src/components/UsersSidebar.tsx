@@ -1,6 +1,13 @@
 "use client";
 
-import { useContext, useState, useRef, useCallback, forwardRef, useEffect } from "react";
+import {
+  useContext,
+  useState,
+  useRef,
+  useCallback,
+  forwardRef,
+  useEffect,
+} from "react";
 import Input from "./ui/Input";
 import { Skeleton } from "./ui/Skeleton";
 import Text from "./ui/Text";
@@ -17,12 +24,13 @@ import { RouteContext } from "./Route";
 import { getImageUrl } from "@/lib/utils";
 import useInfiniteCursor from "@/hooks/useInfiniteCursor";
 import { useFriendRequestFetch } from "@/zustand/friendRequestFetch.zustand";
+import useCurrentChat from "@/zustand/currentChat.zustand";
 
 const UsersSidebar = () => {
   const session = useContext(RouteContext);
   const [text, setText] = useState("");
   const [cursor, setCursor] = useState("$");
-  const reFetch = useFriendRequestFetch((state) => state.friendRequestFetch)
+  const reFetch = useFriendRequestFetch((state) => state.friendRequestFetch);
   const {
     isLoading,
     hasMore,
@@ -36,8 +44,8 @@ const UsersSidebar = () => {
   );
 
   useEffect(() => {
-    setCursor("$")
-  },[reFetch])
+    setCursor("$");
+  }, [reFetch]);
 
   const observer = useRef();
   /**@ts-ignore */
@@ -99,7 +107,7 @@ const UsersSidebar = () => {
             ) : null
           )}
         {users.length === 0 && hasMore && <SkeletonComponent />}
-        {users.length === 0 && !hasMore && (<div>Nothing to Show</div>)}
+        {users.length === 0 && !hasMore && <div>Nothing to Show</div>}
       </div>
     </div>
   );
@@ -134,39 +142,45 @@ interface UserCardProps {
 }
 
 const UserCard = forwardRef(({ user, session }: UserCardProps, ref) => {
+  const setCurrentChat = useCurrentChat((state) => state.setCurrentChat);
   return (
-    <Link
-      href={`/chat/${session?.user?.email}/${user.email}`}
-      /**@ts-ignore */
+    <div
+      className="border p-2 rounded-md flex space-x-2 cursor-pointer hover:bg-secondary"
+      // @ts-ignore
       ref={ref}
+      onClick={(e) =>
+        setCurrentChat({
+          email: user.email as string,
+          name: user.name,
+          image: user.image,
+        })
+      }
     >
-      <div className="border p-2 rounded-md flex space-x-2 cursor-pointer hover:bg-secondary">
-        <Image
-          src={getImageUrl(user.image, user.email)}
-          alt="avatar"
-          width={48}
-          height={48}
-          className="rounded-full"
-        />
-        <div className="flex-1 flex flex-col justify-center overflow-hidden">
-          <Tooltip.TooltipProvider>
-            <Tooltip.TooltipRoot>
-              <Tooltip.TooltipTrigger asChild>
-                <Text className="truncate font-bold">{user.email}</Text>
-              </Tooltip.TooltipTrigger>
-              <Tooltip.TooltipPortal>
-                <Tooltip.TooltipContent>
-                  {user.email}
-                  <Tooltip.TooltipArrow />
-                </Tooltip.TooltipContent>
-              </Tooltip.TooltipPortal>
-            </Tooltip.TooltipRoot>
-          </Tooltip.TooltipProvider>
-          <Text className="truncate capitalize" size="sm">
-            {user.name}
-          </Text>
-        </div>
+      <Image
+        src={getImageUrl(user.image, user.email)}
+        alt="avatar"
+        width={48}
+        height={48}
+        className="rounded-full"
+      />
+      <div className="flex-1 flex flex-col justify-center overflow-hidden">
+        <Tooltip.TooltipProvider>
+          <Tooltip.TooltipRoot>
+            <Tooltip.TooltipTrigger asChild>
+              <Text className="truncate font-bold">{user.email}</Text>
+            </Tooltip.TooltipTrigger>
+            <Tooltip.TooltipPortal>
+              <Tooltip.TooltipContent>
+                {user.email}
+                <Tooltip.TooltipArrow />
+              </Tooltip.TooltipContent>
+            </Tooltip.TooltipPortal>
+          </Tooltip.TooltipRoot>
+        </Tooltip.TooltipProvider>
+        <Text className="truncate capitalize" size="sm">
+          {user.name}
+        </Text>
       </div>
-    </Link>
+    </div>
   );
 });

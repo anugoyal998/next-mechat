@@ -1,19 +1,18 @@
 "use client";
-
-import { FC, useContext } from "react";
-import { RouteContext } from "../Route";
 import Image from "next/image";
 import { getImageUrl } from "@/lib/utils";
 import Text from "../ui/Text";
+import useOnlineUsers from "@/zustand/onlineUsers.zustand";
+import useCurrentChat from "@/zustand/currentChat.zustand";
 
-interface ChatNavbarProps {}
+const ChatNavbar = () => {
+  const currentChat = useCurrentChat((state) => state.currentChat);
+  const onlineUsers = useOnlineUsers((state) => state.onlineUsers);
 
-const ChatNavbar: FC<ChatNavbarProps> = ({}) => {
-  const session = useContext(RouteContext);
   return (
     <div className="flex space-x-2 items-center">
       <Image
-        src={getImageUrl(session?.user?.image, session?.user?.email)}
+        src={getImageUrl(currentChat?.image, currentChat?.email as string)}
         width={50}
         height={50}
         alt="user_image"
@@ -21,9 +20,13 @@ const ChatNavbar: FC<ChatNavbarProps> = ({}) => {
       />
       <div>
         <Text variant="primaryBold" size="lg" className="text-black">
-          {session?.user?.email?.split("@")[0]}
+          {currentChat?.email?.split("@")[0]}
         </Text>
-        <Text size="sm" >{session?.user?.name}Anubhav</Text>
+        <Text size="sm">
+          {onlineUsers.find((user) => user.email === currentChat?.email)
+            ? "Online"
+            : "Offline"}
+        </Text>
       </div>
     </div>
   );

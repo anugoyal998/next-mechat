@@ -17,6 +17,7 @@ import { GetFriendRequestType } from "@/types/api.types";
 import io from "socket.io-client";
 import { useToastData, useToastOpen } from "@/zustand/toast.zustand";
 import { useFriendRequestFetch } from "@/zustand/friendRequestFetch.zustand";
+import useOnlineUsers, { OnlineUserType } from "@/zustand/onlineUsers.zustand";
 
 const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -40,6 +41,7 @@ const Navbar = () => {
   ]);
   const setOpen = useToastOpen((state) => state.setOpen);
   const setToastData = useToastData((state) => state.setToastData);
+  const setOnlineUsers = useOnlineUsers((state) => state.setOnlineUsers);
 
   const socketInit = async () => {
     await fetch("/api/socket_io");
@@ -67,6 +69,17 @@ const Navbar = () => {
         setReFetch((prev) => !prev);
       }
     );
+
+    socket.emit(`user_online`, {
+      name: session?.user?.name,
+      email: session?.user?.email as string,
+      image: session?.user?.image,
+    });
+
+    const handleOnlineUsers = (onlineUsers: OnlineUserType[]) => {
+      setOnlineUsers(onlineUsers);
+    };
+    socket.on(`online_users`, handleOnlineUsers);
   };
 
   useEffect(() => {
