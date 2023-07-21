@@ -38,6 +38,7 @@ const UsersSidebar = () => {
     newCursor,
   } = useInfiniteCursor<GetUserTextResponseType, any>(
     { method: "GET", url: `/api/get-user/${text ? text : "*"}/${cursor}` },
+    (prev, next) => [...prev, ...next],
     cursor,
     text,
     reFetch
@@ -115,7 +116,7 @@ const UsersSidebar = () => {
 
 export default UsersSidebar;
 
-const SkeletonComponent = () => {
+export const SkeletonComponent = () => {
   return (
     <>
       {Array.from({ length: 10 })

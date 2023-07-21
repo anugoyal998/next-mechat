@@ -1,14 +1,16 @@
-import { Dispatch, FC, MouseEventHandler, SetStateAction } from "react";
+import {
+  MouseEventHandler,
+  useState,
+  useContext,
+} from "react";
 import { Send, Plus } from "lucide-react";
+import useCurrentChat from "@/zustand/currentChat.zustand";
+import { RouteContext } from "../Route";
 
-interface EditorProps {
-  msg: string;
-  setMesg: Dispatch<SetStateAction<string>>;
-  currentChat: string;
-  sndEmail: string;
-}
-
-const Editor: FC<EditorProps> = ({ msg, setMesg, currentChat, sndEmail }) => {
+const Editor = ({}) => {
+  const [msg, setMsg] = useState("");
+  const currentChat = useCurrentChat((state) => state.currentChat?.email as string);
+  const sndEmail = useContext(RouteContext)?.user?.email as string;
   const handleSendMessage: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
     if (!msg) return;
@@ -22,6 +24,7 @@ const Editor: FC<EditorProps> = ({ msg, setMesg, currentChat, sndEmail }) => {
           text: msg,
         }),
       });
+      setMsg("");
     } catch (err) {}
   };
   return (
@@ -34,7 +37,7 @@ const Editor: FC<EditorProps> = ({ msg, setMesg, currentChat, sndEmail }) => {
           autoFocus
           placeholder="Type a message"
           value={msg}
-          onChange={(e) => setMesg(e.target.value)}
+          onChange={(e) => setMsg(e.target.value)}
         />
       </div>
       <button
