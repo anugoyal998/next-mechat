@@ -70,7 +70,7 @@ const UsersSidebar = () => {
 
   return (
     <div
-      className="fixed w-[250px] bg-white border-r border-slate-300 shadow-sm overflow-y-scroll"
+      className="fixed w-full md:w-[250px] bg-white border-r border-slate-300 shadow-sm overflow-y-scroll"
       style={{ height: "calc(100vh - 5rem)" }}
     >
       <Input

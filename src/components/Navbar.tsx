@@ -19,7 +19,7 @@ import { useToastData, useToastOpen } from "@/zustand/toast.zustand";
 import { useFriendRequestFetch } from "@/zustand/friendRequestFetch.zustand";
 import useOnlineUsers, { OnlineUserType } from "@/zustand/onlineUsers.zustand";
 
-const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
+export const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
   "& .MuiBadge-badge": {
     background: "black",
     color: "white",
@@ -121,15 +121,17 @@ const Navbar = () => {
           <Menu
             isSession={session ? true : false}
             email={session?.user?.email}
+            session={session}
+            friendRequest={friendRequest}
           />
         </div>
         <div className="hidden md:flex gap-2">
-          <Link
-            href={`/profile/${session?.user?.email}`}
+          {/* <Link
+            href="/profile"
             className={buttonVariants({ variant: "ghost" })}
           >
             Profile
-          </Link>
+          </Link> */}
           <HoverCard
             cardTrigger={
               <Button variant="link">

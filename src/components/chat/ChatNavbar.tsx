@@ -2,15 +2,27 @@
 import Image from "next/image";
 import { getImageUrl } from "@/lib/utils";
 import Text from "../ui/Text";
+import { ArrowLeft } from "lucide-react";
 import useOnlineUsers from "@/zustand/onlineUsers.zustand";
 import useCurrentChat from "@/zustand/currentChat.zustand";
+import useWindowSize from "@/hooks/useWindowSize";
 
 const ChatNavbar = () => {
-  const currentChat = useCurrentChat((state) => state.currentChat);
+  const [currentChat, setCurrentChat] = useCurrentChat((state) => [
+    state.currentChat,
+    state.setCurrentChat,
+  ]);
   const onlineUsers = useOnlineUsers((state) => state.onlineUsers);
+  const windowSize = useWindowSize();
 
   return (
     <div className="flex space-x-2 items-center">
+      {windowSize.width < 768 ? (
+        <ArrowLeft
+          className="cursor-pointer"
+          onClick={() => setCurrentChat(null)}
+        />
+      ) : null}
       <Image
         src={getImageUrl(currentChat?.image, currentChat?.email as string)}
         width={50}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react"
 import ChatNavbar from "@/components/chat/ChatNavbar";
 import Editor from "@/components/chat/Editor";
 // import Message from "@/components/chat/Message";
@@ -8,12 +9,16 @@ import Text from "@/components/ui/Text";
 import useCurrentChat from "@/zustand/currentChat.zustand";
 import { MessageCircle } from "lucide-react";
 import { Metadata } from "next";
+import { cn } from "@/lib/utils";
+import useWindowSize from "@/hooks/useWindowSize";
 
 const page = ({}) => {
   const currentChat = useCurrentChat((state) => state.currentChat);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const windowSize = useWindowSize()
   return !currentChat ? (
     <div
-      className="fixed left-[250px] bg-secondary border-r border-slate-300 shadow-sm p-3 flex justify-center items-center"
+      className="hidden fixed left-[250px] bg-secondary border-r border-slate-300 shadow-sm p-3 md:flex justify-center items-center"
       style={{
         height: "calc(100vh - 5rem)",
         width: "calc(100vw - 250px)",
@@ -26,10 +31,11 @@ const page = ({}) => {
     </div>
   ) : (
     <div
-      className="fixed left-[250px] bg-[#F1F4F5] border-r border-slate-300 shadow-sm p-3"
+      className={cn("fixed bg-[#F1F4F5] border-r border-slate-300 shadow-sm p-3", windowSize.width >= 768 && "left-[250px]" )}
+      id="chat"
       style={{
         height: "calc(100vh - 5rem)",
-        width: "calc(100vw - 250px)",
+        width: windowSize.width < 768 ? "100vw" : "calc(100vw - 250px)",
       }}
     >
       <ChatNavbar />
@@ -37,7 +43,7 @@ const page = ({}) => {
       <Message1 />
       <div
         className="fixed bottom-2"
-        style={{ width: "calc(100vw - 250px - 24px)", height: "3rem" }}
+        style={{ width: windowSize.width < 768 ? "100vw" : "calc(100vw - 250px - 24px)", height: "3rem" }}
       >
         <Editor />
       </div>
