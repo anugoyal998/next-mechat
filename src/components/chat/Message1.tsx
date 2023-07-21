@@ -2,20 +2,62 @@ import { cn, formatTimeToNow } from "@/lib/utils";
 import useCurrentChat from "@/zustand/currentChat.zustand";
 import { Message } from "@prisma/client";
 import axios from "axios";
-import { FC, forwardRef, useRef, useState, useEffect } from "react";
+import {
+  FC,
+  forwardRef,
+  useRef,
+  useState,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+  useContext,
+} from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { RouteContext } from "../Route";
+import io from "socket.io-client";
+import uniqBy from "lodash/uniqBy";
 
-interface Message1Props {}
+interface Message1Props {
+  items: Message[];
+  setItems: Dispatch<SetStateAction<Message[]>>;
+}
 
-const Message1: FC<Message1Props> = ({}) => {
+/**@ts-ignore */
+let socket;
+
+const Message1: FC<Message1Props> = ({ items, setItems }) => {
   const ref = useRef();
-  const [items, setItems] = useState<Message[]>([]);
   const [disabled, setDisabled] = useState(false);
   const [cursor, setCursor] = useState("$");
   const [hasMore, setHasMore] = useState(true);
   const currentChat = useCurrentChat((state) => state.currentChat);
-  
-  const fetch = (flag = false) => {
+  const session = useContext(RouteContext);
+
+  const socketInit = async () => {
+    await fetch("/api/socket_io");
+    /**@ts-ignore */
+    socket = io(undefined, {
+      path: "/api/socket_io",
+    });
+    socket.on(
+      `incoming_message:${session?.user?.email as string}`,
+      (d: any) => {
+        const date = Date.now();
+        // @ts-ignore
+        setItems((prev) =>
+          uniqBy([{ ...d, createdAt: date }, ...prev], (obj) => obj.createdAt)
+        );
+      }
+    );
+  };
+
+  useEffect(() => {
+    socketInit();
+    /**@ts-ignore */
+    if (socket) return () => socket.disconnect();
+  }, []);
+
+  const fetch1 = (flag = false) => {
     flag && setItems((prev) => []);
     flag && setHasMore((prev) => true);
     flag && setCursor("$");
@@ -37,7 +79,7 @@ const Message1: FC<Message1Props> = ({}) => {
   };
 
   useEffect(() => {
-    fetch(true);
+    fetch1(true);
   }, [currentChat]);
 
   return (
@@ -54,7 +96,7 @@ const Message1: FC<Message1Props> = ({}) => {
     >
       <InfiniteScroll
         dataLength={items.length}
-        next={fetch}
+        next={fetch1}
         style={{
           display: "flex",
           flexDirection: "column-reverse",

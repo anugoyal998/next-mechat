@@ -2,14 +2,24 @@ import {
   MouseEventHandler,
   useState,
   useContext,
+  Dispatch,
+  SetStateAction,
 } from "react";
 import { Send, Plus } from "lucide-react";
 import useCurrentChat from "@/zustand/currentChat.zustand";
 import { RouteContext } from "../Route";
+import { Message } from "@prisma/client";
+import uniqBy from "lodash/uniqBy";
 
-const Editor = ({}) => {
+const Editor = ({
+  setItems,
+}: {
+  setItems: Dispatch<SetStateAction<Message[]>>;
+}) => {
   const [msg, setMsg] = useState("");
-  const currentChat = useCurrentChat((state) => state.currentChat?.email as string);
+  const currentChat = useCurrentChat(
+    (state) => state.currentChat?.email as string
+  );
   const sndEmail = useContext(RouteContext)?.user?.email as string;
   const handleSendMessage: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
@@ -25,6 +35,23 @@ const Editor = ({}) => {
         }),
       });
       setMsg("");
+      const d = Date.now();
+      // @ts-ignore
+      setItems((prev) =>
+        uniqBy(
+          [
+            {
+              sndEmail,
+              recEmail: currentChat,
+              type: "text",
+              text: msg,
+              createdAt: d,
+            },
+            ...prev,
+          ],
+          (obj) => obj.createdAt
+        )
+      );
     } catch (err) {}
   };
   return (

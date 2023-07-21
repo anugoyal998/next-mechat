@@ -11,10 +11,12 @@ import { MessageCircle } from "lucide-react";
 import { Metadata } from "next";
 import { cn } from "@/lib/utils";
 import useWindowSize from "@/hooks/useWindowSize";
+import { Message } from "@prisma/client";
 
 const page = ({}) => {
   const currentChat = useCurrentChat((state) => state.currentChat);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [items, setItems] = useState<Message[]>([])
   const windowSize = useWindowSize()
   return !currentChat ? (
     <div
@@ -40,12 +42,12 @@ const page = ({}) => {
     >
       <ChatNavbar />
       <div className="my-2 border" />
-      <Message1 />
+      <Message1 items={items} setItems={setItems} />
       <div
         className="fixed bottom-2"
         style={{ width: windowSize.width < 768 ? "100vw" : "calc(100vw - 250px - 24px)", height: "3rem" }}
       >
-        <Editor />
+        <Editor setItems={setItems} />
       </div>
     </div>
   );

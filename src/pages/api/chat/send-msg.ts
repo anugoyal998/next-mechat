@@ -28,7 +28,7 @@ export default async (req: NextApiRequest, res: NextApiResponseServerIO) => {
         data: { ...payload }
     })
     // emit socket event
-    res?.socket?.server?.io?.emit(`incoming_message:${user.email as string}`,{
+    res?.socket?.server?.io?.emit(`incoming_message:${payload.recEmail as string}`,{
         sndEmail: payload.sndEmail,
         recEmail: payload.recEmail,
         type: payload.type,
