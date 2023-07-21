@@ -7,14 +7,14 @@ import Input from "@/components/ui/Input";
 import Text from "@/components/ui/Text";
 import { toast } from "@/components/ui/Toast";
 import { Mail } from "lucide-react";
-import { Metadata } from "next";
+// import { Metadata } from "next";
 import { signIn } from "next-auth/react";
 import { FC, FormEvent, useState } from "react";
 
-export const metadata: Metadata = {
-  title: "MeChat | Signin",
-  description: "Signin",
-};
+// export const metadata: Metadata = {
+//   title: "MeChat | Signin",
+//   description: "Signin",
+// };
 
 interface pageProps {}
 

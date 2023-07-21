@@ -1,14 +1,14 @@
 import Route from "@/components/Route";
 import CenterContainer from "@/components/ui/CenterContainer";
 import Text from "@/components/ui/Text";
-import { Metadata } from "next";
+// import { Metadata } from "next";
 import Link from "next/link";
 import { FC } from "react";
 
-export const metadata: Metadata = {
-  title: "MeChat | Verify",
-  description: "Verify",
-};
+// export const metadata: Metadata = {
+//   title: "MeChat | Verify",
+//   description: "Verify",
+// };
 
 interface pageProps {}
 

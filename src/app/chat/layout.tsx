@@ -4,14 +4,14 @@ import Navbar from "@/components/Navbar";
 import Route from "@/components/Route";
 import UsersSidebar from "@/components/UsersSidebar";
 import Toast from "@/components/Toast";
-import { Metadata } from "next";
+// import { Metadata } from "next";
 import { ReactNode, useState } from "react";
 import useWindowSize from "@/hooks/useWindowSize";
 import useCurrentChat from "@/zustand/currentChat.zustand";
 
-export const metadata: Metadata = {
-  title: "MeChat | Chat",
-};
+// export const metadata: Metadata = {
+//   title: "MeChat | Chat",
+// };
 
 const layout = ({ children }: { children: ReactNode }) => {
   const windowSize = useWindowSize()

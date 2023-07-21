@@ -2,14 +2,14 @@ import Route from "@/components/Route";
 import Button from "@/components/ui/Button";
 import CenterContainer from "@/components/ui/CenterContainer";
 import Text from "@/components/ui/Text";
-import { Metadata } from "next";
+// import { Metadata } from "next";
 import Link from "next/link";
 import { FC } from "react";
 
-export const metadata: Metadata = {
-  title: "MeChat | Signin Error",
-  description: "Signin error",
-};
+// export const metadata: Metadata = {
+//   title: "MeChat | Signin Error",
+//   description: "Signin error",
+// };
 
 interface pageProps {}
 
